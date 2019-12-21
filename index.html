@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+
+  <title>Total Comp Calculator</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+  <div class="container">
+
+    <div class="py-5 text-center">
+      <img class="d-block mx-auto mb-4" src="assets/images/total_comp.png" width="200" alt="">
+      <h2>Total Compensation Calculator</h2>
+    </div>
+
+    <form>
+      <div class="form-group">
+
+        <div class="form-row justify-content-center">
+
+          <div class="col-auto">
+            <label for="ticker">Company Symbol</label>
+            <input type="text" class="form-control" id="ticker" placeholder="ORCL" value="ORCL" required>
+          </div>
+
+          <div class="col-auto">
+            <label for="base_salary">Base Annual Salary</label>
+            <input type="number" step="1000" class="form-control" id="base_salary" required>
+          </div>
+
+          <div class="col-auto">
+            <label for="rsu">Restricted Stock Units</label>
+            <input type="number" step="250" class="form-control" id="rsu" required>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="form-group">
+
+        <div class="form-row justify-content-center">
+          <button type="submit" id="calculate" class="btn btn-primary">Calculate Total Annual Compensation</button>
+        </div>
+
+      </div>
+
+      <div class="panel panel-default">
+        <div class="panel-body" id="result">
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">&copy; 2019 Daren Race</p>
+    <ul class="list-inline">
+      <li class="list-inline-item"><a href="#privacy">Privacy</a></li>
+    </ul>
+  </footer>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="privacy" tabindex="-1" role="dialog" aria-labelledby="privacy" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Privacy</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          TODO
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/vendor/jquery-3.2.1.slim.min.js"></script>
+  <script src="assets/js/vendor/popper.min.js"></script>
+  <script src="dist/js/bootstrap.min.js"></script>
+  <script src="assets/js/vendor/holder.min.js"></script>
+  <script>
+    $('a[href$="#privacy"]').on("click", function() {
+      $('#privacy').modal('show');
+    });
+
+    $('#calculate').on("click", function(event) {
+      $("#result").append("<p>Test 1</p>");
+      event.preventDefault()
+    });
+
+    (function() {
+
+      $('#base_salary').focus()
+
+    })();
+  </script>
+</body>
+
+</html>
