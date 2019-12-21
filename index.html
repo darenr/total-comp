@@ -103,7 +103,10 @@
     });
 
     $('#calculate').on("click", function(event) {
-      $("#result").append("<p>Test 1</p>");
+      let ticker = $("#ticker").val()
+      let base_salary = $("#base_salary").val()
+      let rsu = $("#rsu").val()
+      $("#result").append(`<p>[${ticker}] base salary: ${base_salary}, RSU: ${rsu}</p>`);
       event.preventDefault()
     });
 
