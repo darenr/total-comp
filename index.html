@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="">
-  <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+  <link rel="icon" href="assets/images/favicon.ico">
 
   <title>Total Comp Calculator</title>
 
@@ -19,58 +19,72 @@
 
   <div class="container">
 
-    <div class="py-5 text-center">
-      <img class="d-block mx-auto mb-4" src="assets/images/total_comp.png" width="200" alt="">
-      <h2>Total Compensation Calculator</h2>
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="py-4 text-center">
+          <img class="d-block mx-auto mb-4" src="assets/images/total_comp.png" width="200" alt="">
+          <h2>Total Compensation Calculator</h2>
+        </div>
+      </div>
     </div>
 
-    <form>
-      <div class="form-group">
-
-        <div class="form-row justify-content-center">
-
-          <div class="col-auto">
+    <div class="row">
+      <div class="col-sm-1">
+      </div>
+      <div class="col-sm-4">
+        <form>
+          <div class="form-group">
             <label for="ticker">Company Symbol</label>
-            <input type="text" class="form-control" id="ticker" placeholder="ORCL" value="ORCL" required>
+            <input type="text" style='text-transform:uppercase' class="form-control" id="ticker" placeholder="ticker" value="ORCL" required>
           </div>
 
-          <div class="col-auto">
+          <div class="form-group">
             <label for="base_salary">Base Annual Salary</label>
-            <input type="number" step="1000" class="form-control" id="base_salary" required>
+            <input type="number" step="5000" class="form-control" id="base_salary" value="125000" required>
           </div>
 
-          <div class="col-auto">
+          <div class="form-group">
             <label for="rsu">Restricted Stock Units</label>
-            <input type="number" step="250" class="form-control" id="rsu" required>
+            <input type="number" step="250" class="form-control" id="rsu" value="1500" required>
           </div>
 
-        </div>
+          <div class="form-group">
+
+            <button type="submit" id="calculate" class="btn btn-primary">
+              <span class="spinner-grow spinner-grow-sm" id="ticker_spinner" role="status" aria-hidden="true"></span>
+              Calculate Annual Total Compensation
+            </button>
+
+          </div>
+
+        </form>
 
       </div>
 
-      <div class="form-group">
-
-        <div class="form-row justify-content-center">
-          <button type="submit" id="calculate" class="btn btn-primary">Calculate Total Annual Compensation</button>
-        </div>
-
+      <div class="col-sm-2">
       </div>
 
-      <div class="panel panel-default">
-        <div class="panel-body" id="result">
+      <div class="col-sm-4">
+
+        <div class="card">
+          <div class="card-body">
+            <h1 class="card-title" id="result"></h1>
+            <hr />
+            <p class="card-text" id="result_addendum"></p>
+          </div>
         </div>
       </div>
 
-    </form>
 
-  </div>
 
-  <footer class="my-5 pt-5 text-muted text-center text-small">
-    <p class="mb-1">&copy; 2019 Daren Race</p>
-    <ul class="list-inline">
-      <li class="list-inline-item"><a href="#privacy">Privacy</a></li>
-    </ul>
-  </footer>
+    </div>
+
+    <footer class="my-5 pt-5 text-muted text-center text-small">
+      <p class="mb-1">&copy; 2019 Daren Race</p>
+      <ul class="list-inline">
+        <li class="list-inline-item"><a href="#privacy">Privacy</a></li>
+      </ul>
+    </footer>
   </div>
 
   <!-- Modal -->
@@ -93,26 +107,77 @@
     </div>
   </div>
 
-  <script src="assets/js/vendor/jquery-3.2.1.slim.min.js"></script>
+  <script src="assets/js/vendor/jquery-3.2.1.min.js"></script>
   <script src="assets/js/vendor/popper.min.js"></script>
   <script src="dist/js/bootstrap.min.js"></script>
   <script src="assets/js/vendor/holder.min.js"></script>
   <script>
+    function numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function lookupStockPrice(ticker) {
+      $("#ticker_spinner").show();
+
+      var url = `https://financialmodelingprep.com/api/v3/company/profile/${ticker}`;
+      $.ajax({
+        url: url,
+        type: "GET",
+        crossDomain: true,
+        async: false,
+        success: function(response) {
+          $("#ticker").data("profile", response['profile']);
+          $("#ticker_spinner").hide();
+          console.log(`${ticker}=${response['profile']['price']}`);
+        },
+        error: function(xhr, status) {
+          alert(`error, unable to get price for ${ticker}`);
+          $("#ticker_spinner").hide();
+        }
+      });
+    }
+
     $('a[href$="#privacy"]').on("click", function() {
       $('#privacy').modal('show');
     });
 
     $('#calculate').on("click", function(event) {
+      let profile = $("#ticker").data()['profile'];
+      let stock_price = profile['price'];
       let ticker = $("#ticker").val()
       let base_salary = $("#base_salary").val()
       let rsu = $("#rsu").val()
-      $("#result").append(`<p>[${ticker}] base salary: ${base_salary}, RSU: ${rsu}</p>`);
+      let total_comp = parseInt(parseFloat(base_salary) + (parseFloat(rsu) * parseFloat(stock_price) / 4.0));
+
+      $("#result").html(`
+        $${numberWithCommas(total_comp)}
+        `);
+
+      $("#result_addendum").html(
+        `
+        <dd><b>${profile["companyName"]}
+        <dd>$${stock_price} ${profile["changesPercentage"]}</b>
+        <dd><small>${profile["description"]}</small>
+        `
+      )
       event.preventDefault()
+    });
+
+    $("#ticker").on("change", function() {
+      lookupStockPrice($("#ticker").val());
+      $('#calculate').click();
     });
 
     (function() {
 
+      if ($("#ticker").val()) {
+        lookupStockPrice($("#ticker").val());
+      }
+
+
+      $('#calculate').click();
       $('#base_salary').focus()
+
 
     })();
   </script>
