@@ -123,7 +123,7 @@
     function lookupStockPrice(ticker) {
       $("#ticker_spinner").show();
 
-      var url = `https://financialmodelingprep.com/api/v3/company/profile/${ticker}`;
+      var url = `https://financialmodelingprep.com/api/v3/company/profile/${ticker}?apikey=1a38ad681c95a42aa25c69b06d8bbd31`;
       $.ajax({
         url: url,
         type: "GET",
